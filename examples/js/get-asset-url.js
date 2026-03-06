@@ -1,7 +1,7 @@
 export async function getAssetFileURL(assetFile) {
   try {
-    const response = await fetch("/examples/assets.json");
-    const assetsDirectory = "/examples/assets/";
+    const response = await fetch("/spark/examples/assets.json");
+    const assetsDirectory = "/spark/examples/assets/";
     const assetsInfo = await response.json();
     let url = assetsInfo[assetFile].url;
     if (window.sparkLocalAssets) {
