@@ -17,18 +17,23 @@
     {
       "imports": {
         "three": "https://cdn.jsdelivr.net/npm/three@0.178.0/build/three.module.js",
+        "three/examples/jsm/": "https://cdn.jsdelivr.net/npm/three@0.178.0/examples/jsm/",
         "@sparkjsdev/spark": "/spark/dist/spark.module.js"
       }
     }
   </script>
   <script type="module">
-    import * as THREE from "three";
-    import { SparkRenderer, SplatMesh, SplatEdit, SplatEditRgbaBlendMode, SplatEditSdf, SplatEditSdfType, VRButton, XrHands } from "@sparkjsdev/spark";
+    import * as THREE from "three"; // removed VRButton below
+    import { SparkRenderer, SplatMesh, SplatEdit, SplatEditRgbaBlendMode, SplatEditSdf, SplatEditSdfType, XrHands } from "@sparkjsdev/spark";
+    import { ARButton } from "three/examples/jsm/webxr/ARButton.js";
     import { getAssetFileURL } from "/spark/examples/js/get-asset-url.js";
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-    const renderer = new THREE.WebGLRenderer();
+    // const renderer = new THREE.WebGLRenderer();
+    const renderer = new THREE.WebGLRenderer({ alpha: true });
+    renderer.setClearColor(0x000000, 0);
+    renderer.xr.enabled = true;
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
 
@@ -55,20 +60,26 @@
     background.scale.setScalar(0.5);
     scene.add(background);
 
-    const vrButton = VRButton.createButton(renderer, {
+    // const vrButton = VRButton.createButton(renderer, {
+    //   optionalFeatures: ["hand-tracking"],
+    // });
+    // let xrHands = null;
+    // if (vrButton) {
+    //     // WebXR is available, so show the button
+    //     document.body.appendChild(vrButton);
+    //
+    //     xrHands = new XrHands();
+    //     const handMesh = xrHands.makeGhostMesh();
+    //     handMesh.editable = false;
+    //     localFrame.add(handMesh);
+    // }
+    document.body.appendChild(ARButton.createButton(renderer, {
       optionalFeatures: ["hand-tracking"],
-    });
-    let xrHands = null;
-    if (vrButton) {
-        // WebXR is available, so show the button
-        document.body.appendChild(vrButton);
-
-        xrHands = new XrHands();
-        const handMesh = xrHands.makeGhostMesh();
-        handMesh.editable = false;
-        localFrame.add(handMesh);
-    }
-
+    }));
+    let xrHands = new XrHands();
+    const handMesh = xrHands.makeGhostMesh();
+    handMesh.editable = false;
+    localFrame.add(handMesh);
     // Create a layer of color edits to apply to editable splats
     const edit = new SplatEdit({
       rgbaBlendMode: SplatEditRgbaBlendMode.ADD_RGBA,
