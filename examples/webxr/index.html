@@ -22,15 +22,13 @@
     }
   </script>
   <script type="module">
-    import * as THREE from "three"; // changed VRButton to ARButton
-    import { SparkRenderer, SplatMesh, SplatEdit, SplatEditRgbaBlendMode, SplatEditSdf, SplatEditSdfType, ARButton, XrHands } from "@sparkjsdev/spark";
+    import * as THREE from "three";
+    import { SparkRenderer, SplatMesh, SplatEdit, SplatEditRgbaBlendMode, SplatEditSdf, SplatEditSdfType, VRButton, XrHands } from "@sparkjsdev/spark";
     import { getAssetFileURL } from "/spark/examples/js/get-asset-url.js";
 
     const scene = new THREE.Scene();
-    scene.background = null; // added this line
     const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-    const renderer = new THREE.WebGLRenderer({alpha: True}); // Added alpha: True argument
-    renderer.setClearColor(0x000000, 0);
+    const renderer = new THREE.WebGLRenderer();
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
 
@@ -57,27 +55,14 @@
     background.scale.setScalar(0.5);
     scene.add(background);
 
-    // const vrButton = VRButton.createButton(renderer, {
-    //   optionalFeatures: ["hand-tracking"],
-    // });
-    // let xrHands = null;
-    // if (vrButton) {
-    //     // WebXR is available, so show the button
-    //     document.body.appendChild(vrButton);
-
-    //     xrHands = new XrHands();
-    //     const handMesh = xrHands.makeGhostMesh();
-    //     handMesh.editable = false;
-    //     localFrame.add(handMesh);
-    // }
-    // Replace VRButton with ARButton
-    const arButton = ARButton.createButton(renderer, {
+    const vrButton = VRButton.createButton(renderer, {
       optionalFeatures: ["hand-tracking"],
-      environmentBlendMode: "alpha-blend",  // Key for Magic Leap 2 passthrough
     });
     let xrHands = null;
-    if (arButton) {
-        document.body.appendChild(arButton);
+    if (vrButton) {
+        // WebXR is available, so show the button
+        document.body.appendChild(vrButton);
+
         xrHands = new XrHands();
         const handMesh = xrHands.makeGhostMesh();
         handMesh.editable = false;
